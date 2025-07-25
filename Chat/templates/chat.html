@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% load static %}
+<head>
+    {% block title %}
+    <title>Chat</title>
+    {% endblock %}
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'chat.css' %}">
+    <script type="text/javascript">
+        var username = "{{ userop.username }}";
+        let email = "{{userop.email}}";
+        let user = {}
+    </script>
+    <script type="text/javascript" src="{% static 'chat.js' %}"></script>
+    {% endblock %}
+</head>
+<body class="text">
+    {% block body %}
+    <div class="container">
+        <nav class="contacts">
+           <input type="search" id="search" placeholder="Search contacts...">
+           <div id="contacts">
+               {% for user in users %}
+                   {% if userop != user %}
+                   <span class="text contact-name">{{user.username}}</span>
+                   {% endif %}
+               {% endfor %}
+           </div>
+        </nav>
+        <div class="chat-container">
+          <nav class="info">
+            <h2 class="text personal-info"></h2>
+          </nav>
+          <div class="chat-messages" id="chat-messages">
+
+          </div>
+          <nav class="chat-input">
+            <input type="text" id="message-input" placeholder="Type your message here...">
+            <button id="send-button">Send</button>
+          </nav>
+        </div>
+    </div>
+    {% endblock %}
+</body>

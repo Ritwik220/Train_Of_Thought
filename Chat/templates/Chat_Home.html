@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% load static %}
+<head>
+    {% block title %}
+    <title>ChatVerse</title>
+    {% endblock %}
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'Chat_Home.css' %}">
+    <script src="{% static 'Chat_Home.js' %}"></script>
+    {% endblock %}
+</head>
+<body class="text">
+    {% block body %}
+    <img src="{% static 'Chat_Logo.png' %}" alt="Chat Logo" id="logo">
+    <h1 class="text" id="Title">
+      <section id="Heading1"></section>
+      <section id="Heading2"></section>
+    </h1>
+    <h2 class="text"></h2>
+    <div id="buttons">
+        <button id="Register" class="text">Register</button>
+        <button id="Login" class="text">Log In</button>
+    </div>
+    {% endblock %}
+</body>

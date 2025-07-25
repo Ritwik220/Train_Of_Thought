@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% extends "./././layout.html" %}
+{% load static %}
+<html lang="en">
+<head>
+    {% block title %}
+    <title>To-Do list</title>
+    {% endblock %}
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'to_do_list.css'%}">
+    {% endblock %}
+</head>
+<body>
+  {% block body %}
+  <div class="heading">
+    <h1 id="heading">Tasks</h1>
+  </div>
+  <div class="tasks">
+    <form class="" action="{% url 'add' %}" method="post">
+      {% csrf_token %}
+      {% for task in tasks %}
+          <div class="task">
+            <input type="checkbox" name="{{task}}"><label> {{task}}</label>
+          </div>
+      {% endfor %}
+      <input type="submit" name="Add" value="Add" class="button">
+    </form>
+  </div>
+  {% endblock %}
+</body>
+</html>

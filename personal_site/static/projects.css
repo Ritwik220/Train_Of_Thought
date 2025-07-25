@@ -1,0 +1,12 @@
+.card{
+  flex-direction: row;
+  height:auto;
+  margin: 50px;
+  justify-content: flex-start;
+  padding: 30px;
+  border-radius: 50px;
+  width: auto;
+}
+.card:hover{
+  cursor: pointer;
+}

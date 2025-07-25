@@ -1,0 +1,17 @@
+
+form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.tasks{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.task{
+  margin: 50px;
+}
+.button{
+  align-self: center;
+}

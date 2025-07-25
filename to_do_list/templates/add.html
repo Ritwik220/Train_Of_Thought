@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+<head>
+  {% block title %}
+  <title>Add Task</title>
+  {% endblock %}
+</head>
+<body >
+  {% block body %}
+  <form class="" action="{% url 'add' %}" method="post" style="display: flex; flex-direction: column; justify-content: center; height: 500px">
+    {% csrf_token %}
+    <section style="align-self: center;margin: 50px;">
+      {{ form }}
+    </section>
+    <input type="submit" name="" value="Add" class="button" style="align-self: center">
+  </form>
+  {% endblock %}
+</body>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% extends "layout.html"%}
+{% load static %}
+  <head>
+    {% block title %}
+    <title>Train Of Thought</title>
+    {% endblock %}
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'styles.css'%}">
+    <link rel="icon" href="{% static 'Favicon/favicon.ico' %}">
+    {% endblock %}
+  </head>
+  <body>
+    {% block body %}
+    <div class="heading">
+      <h1 id="heading">Train Of Thought</h1>
+      <form class="sign-in-log-in" action="index.html" method="post">
+        <input type="button" name="Sign-Up" value="Sign up" class="button">
+        <input type="button" name="Log-In" value="Log in" class="button">
+      </form>
+    </div>
+    <div class="card">
+
+    </div>
+     {% endblock %}
+  </body>
+</html>

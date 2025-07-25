@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    {% block title %}
+    {% endblock %}
+    <style media="screen">
+      @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap');
+      @keyframes animate_button{
+        0% {border-color: #86A7FC}
+        33.3% {border-color: #BF3131}
+        66.6% {border-color: #C3E2C2}
+        100% {border-color: #86A7FC}
+      }
+      body{
+        background-color: #FFE7C1;
+      }
+
+      .heading{
+        font-family: Quicksand;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      #heading{
+        align-self: center;
+        color: #191919;
+        font-size: 48px;
+        font-weight: lighter;
+      }
+      .button{
+        width: 100px;
+        height: 50px;
+        border-radius: 20px;
+        margin: 0px 5px;
+        border-width: thin;
+        border-color: #86A7FC;
+        background-color: initial;
+        animation-name: animate_button;
+        animation-duration: 5s;
+        cursor: pointer;
+      }
+    </style>
+    {% block css %}
+    {% endblock %}
+  </head>
+  <body>
+    {% block body %}
+    {% endblock %}
+  </body>
+</html>

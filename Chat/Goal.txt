@@ -1,0 +1,3 @@
+----------------------------------------- GOALS FOR TODAY ------------------------------------------------
+1. Complete the models.py file.
+2. Debug the chat app.

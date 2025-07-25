@@ -1,0 +1,34 @@
+{% extends "layout.html"%}
+{% load static %}
+<head>
+    {% block title %}
+    <title>Raunak</title>
+    {% endblock %}
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'personal_site.css' %}">
+    <script src="{% static 'personal_site.js' %}"></script>
+    {% endblock %}
+</head>
+<body>
+  {% block body %}
+  <nav class="navbar">
+    <label for="" class="text nav-text">Home</label>
+    <label for="" class="text nav-text">Projects</label>
+  </nav>
+  <div class="greet">
+    <h1 id="heading" class="text">Hello, my name is <section id="name">Raunak</section></h1>
+    <button type="button" name="button" class="button projects-button text">Projects</button>
+  </div>
+  <div class="intro-cards">
+    <div class="card">
+      <h2 class="text">Who am I?</h2>
+      <p class="text">Hello. I am 17 year old boy from India who likes to code video games, websites, bots, etc.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+    <div class="card">
+      <h2 class='text'>What do I do?</h2>
+      <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+  </div>
+  {% endblock %}
+</body>
+</html>

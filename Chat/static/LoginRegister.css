@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap');
+html{
+  overflow-y: hidden;
+}
+body{
+  height: 100vh;
+  background: linear-gradient(45deg, #000000, #070F2B);
+  display: flex;
+  justify-content: space-evenly;
+}
+.text{
+  font-family: Quicksand;
+  color: white;
+  align-self: center;
+  margin: 50px;
+}
+form{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.login-card{
+  background: linear-gradient(45deg, #0A0A1F, #101832);
+  box-shadow: 0 0 10px #3F3B6C;
+  width: 60%;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  height: 95%;
+}
+input{
+  border-radius: 15px;
+}
+section{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+  margin: 5%
+}
+button{
+  margin: 20%;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-radius: 15px;
+  background: linear-gradient(45deg, #3F3B6C, #0A0A1F);
+  box-shadow: 0 0 10px #3F3B6C;
+  color: white;
+}
+h1{
+  margin: 5%;
+}

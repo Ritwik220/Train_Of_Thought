@@ -1,0 +1,31 @@
+@keyframes remain_center{
+  0% {justify-content: center;}
+  100% {justify-content: center;}
+}
+@keyframes animate_upwards{
+  0% {top: 100%; opacity: 0;}
+  100% {top: 0%  ; opacity: 1;}
+}
+.heading{
+  height: 500px;
+}
+#heading{
+  position: relative;
+  animation-name: animate_upwards;
+  animation-duration: 5s;
+}
+.card{
+  background-color: #FCECDD;
+  height: 500px;
+  display: flex;
+  position: relative;
+  justify-content: space-around;
+  margin: 0px 100px;
+  animation-name: animate_upwards;
+  animation-duration: 5s;
+}
+.sign-in-log-in{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
