@@ -17,14 +17,35 @@ document.addEventListener("DOMContentLoaded", () => {
     // Taking the submit button and assigning an event of sending the message to the backend to it if pressed
     let chat_submit = document.getElementById("send-button");
     chat_submit.addEventListener('click', sendMessage);
+    var search = document.getElementById("search");
     // Doing the same if the enter key is pressed
-    document.addEventListener('keydown', function(event) { if(event.key === 'Enter') {
+    document.addEventListener('keydown', function(event) {
+     if(event.key === 'Enter') {
         sendMessage();
+    }
+    else if(search.innerHTML !== "null") {
+        console.log("Search value: ", search.value);
+        searchContact(search.value);
     }
     });
 
+
 }
 )
+
+
+function searchContact(searchTerm) {
+    let contacts = document.querySelectorAll('.contact-name');
+    contacts.forEach(contact => {
+        console.log("Contact name: ", contact.innerHTML.toLowerCase().substring(0, searchTerm.length));
+        console.log("Search term: ", searchTerm);
+        if(contact.innerHTML.toLowerCase().includes(searchTerm.toLowerCase())) {
+            contact.style.display = 'block';
+        } else {
+            contact.style.display = 'none';
+        }
+    });
+}
 
 // Displaying the name of the contact selected at the top of the chat area
 function updateChatUser(element){

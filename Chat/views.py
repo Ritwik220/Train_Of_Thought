@@ -19,7 +19,7 @@ def chat(request):
     if user.username:
         print("Username: ", user.username)
         return render(request=request, template_name='chat.html', context={"userop": user, "users": CustomUser.objects.all()})
-    return HttpResponseRedirect("/login")
+    return HttpResponseRedirect("login")
 
 
 def register(request):
@@ -33,11 +33,12 @@ def register(request):
         try:
             user = CustomUser.objects.create_user(email=email, password=password, username=username)
             user.save()
+            print("User saved")
             user = authenticate(username=user.username, password=user.password)
             request.user = user
             login(request, user)
             print("User saved")
-            return render(request=request, template_name="chat.html", context={"userop": user, "users": CustomUser.objects.all()})
+            return redirect('/Chat/')
         except Exception as e:
             print(f"Error: {e}")
             raise Exception("Could not create user")
@@ -55,7 +56,7 @@ def login_view(request):
         if user is not None:
             print("User authenticated")
             login(request, user)
-            return render(request=request, template_name="chat.html")
+            return redirect('/Chat/')
         else:
             print("Invalid credentials ", user)
             return render(request=request, template_name="login.html", context={"error": "Invalid credentials"})
