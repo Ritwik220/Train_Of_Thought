@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, Chats
+from django.db.utils import OperationalError
 
 
 # Create your views here.
@@ -15,11 +16,11 @@ def chat_home(request):
 
 def chat(request):
     user = request.user
-    print(user)
     if user.username:
         print("Username: ", user.username)
         return render(request=request, template_name='chat.html', context={"userop": user, "users": CustomUser.objects.all()})
-    return HttpResponseRedirect("login")
+    else:
+        return HttpResponseRedirect("register")
 
 
 def register(request):
@@ -38,7 +39,7 @@ def register(request):
             request.user = user
             login(request, user)
             print("User saved")
-            return redirect('/Chat/')
+            return HttpResponseRedirect("Chat")
         except Exception as e:
             print(f"Error: {e}")
             raise Exception("Could not create user")
