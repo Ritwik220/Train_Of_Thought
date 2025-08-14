@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, Chats
-from django.db.utils import OperationalError
 
 
 # Create your views here.
@@ -27,20 +26,23 @@ def register(request):
     if request.method == "GET":
         return render(request=request, template_name="Register.html")
     elif request.method == "POST":
-        print("Submit button pressed")
+        print("Submit button pressed.")
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        print(username, email, password)
+        print("Going in try block")
         try:
             user = CustomUser.objects.create_user(email=email, password=password, username=username)
             user.save()
             print("User saved")
-            user = authenticate(username=user.username, password=user.password)
+            # user = authenticate(username=username, password=password)
             request.user = user
             login(request, user)
             print("User saved")
             return HttpResponseRedirect("Chat")
         except Exception as e:
+            print("Exception")
             print(f"Error: {e}")
             raise Exception("Could not create user")
 
