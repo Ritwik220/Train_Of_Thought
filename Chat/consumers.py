@@ -35,32 +35,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.chat_room = await sync_to_async(ChatRooms.objects.get)(name=self.room_group_name)
             self.chats = await sync_to_async(lambda: list(self.chat_room.chats.select_related('by', 'to').all()))()
             self.past = []
-            chat_received = await sync_to_async(Chats.objects.filter)(to=self.user)
-            chat_detail = {}
-            for received in chat_received:
-                if received.by.username not in chat_detail:
-                    chat_detail[received.by.username] = 0
-                print(f"received: {received}")
-                print(received.is_read)
-                if not received.is_read:
-                    chat_detail[received.by.username] += 1
-                print(chat_detail)
-            for chat in self.chats:
-                print(f"Chat: {chat}")
 
-                sync_to_async(Chats.objects.filter(id=chat.id).update)(is_read=True)  # Marking all past chats as read
-                chat.is_read = True  # Marking all past chats as read
-                await sync_to_async(chat.save)()  # Save the changes to the database
-                self.past.append({
-                    'message': chat.message,
-                    'by': chat.by.username,
-                    'to': chat.to.username,
-                    'by_email': chat.by.email,
-                    'to_email': chat.to.email,
-                    "is_read": chat.is_read,
-                    'timestamp': chat.timestamp.isoformat() if chat.timestamp else None
-                })
-            print(self.past)
             print(f"Room name: {self.room_group_name}\nChannel name: {self.channel_name}")
             print(f"{self.user} connected to {self.room_group_name}")
 
