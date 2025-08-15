@@ -20,6 +20,7 @@ def chat(request):
     for received in chat_received:
         if received.by.username not in chat_detail:
             chat_detail[received.by.username] = 0
+        print(f"received: {received}")
         print(received.is_read)
         if not received.is_read:
             chat_detail[received.by.username] += 1
