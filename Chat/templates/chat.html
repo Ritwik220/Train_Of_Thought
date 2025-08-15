@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load dict_extras %}
 {% load static %}
 <head>
     {% block title %}
@@ -22,7 +23,10 @@
            <div id="contacts">
                {% for user in users %}
                    {% if userop != user %}
-                   <span class="text contact-name">{{user.username}}</span>
+                   <div class="contact">
+                       <span class="text contact-name">{{user.username}}</span>
+                       <span class="text contact-chats">{{details|dict_get:user.username}}</span>
+                   </div>
                    {% endif %}
                {% endfor %}
            </div>

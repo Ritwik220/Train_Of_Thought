@@ -7,9 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check point
     console.log("Document Loaded");
     // Getting all the contacts present and displaying them for the user
-    let contacts = document.querySelectorAll('.contact-name');
+    let contacts = document.querySelectorAll('.contact');
+    let contacts_name = document.querySelectorAll('.contact-name');
+    let i = 0;
     for(contact of contacts) {
-        updateChatUser(contact);
+        updateChatUser(contact, contacts_name[i]);
+        i++;
     }
     // Check point
     console.log(to);
@@ -48,11 +51,11 @@ function searchContact(searchTerm) {
 }
 
 // Displaying the name of the contact selected at the top of the chat area
-function updateChatUser(element){
+function updateChatUser(element, name){
     let heading = document.querySelector('.personal-info');
     element.addEventListener('click', () => {
-        heading.innerHTML = element.innerHTML;
-        to = element.innerHTML;
+        heading.innerHTML = name.innerHTML;
+        to = name.innerHTML;
         createChatRoom(to)
         // console.log(to);
     });

@@ -36,12 +36,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.chats = await sync_to_async(lambda: list(self.chat_room.chats.select_related('by', 'to').all()))()
             self.past = []
             for chat in self.chats:
+                chat.is_read = True  # Marking all past chats as read
+
+                sync_to_async(chat.save)  # Save the changes to the database
                 self.past.append({
                     'message': chat.message,
                     'by': chat.by.username,
                     'to': chat.to.username,
                     'by_email': chat.by.email,
-                    'to_email': chat.to.email
+                    'to_email': chat.to.email,
+                    "is_read": chat.is_read,
+                    'timestamp': chat.timestamp.isoformat() if chat.timestamp else None
                 })
             print(self.past)
             print(f"Room name: {self.room_group_name}\nChannel name: {self.channel_name}")

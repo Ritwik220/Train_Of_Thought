@@ -15,9 +15,23 @@ def chat_home(request):
 
 def chat(request):
     user = request.user
+    chat_received = Chats.objects.filter(to=user)
+    chat_detail = {}
+    for received in chat_received:
+        if received.by.username not in chat_detail:
+            chat_detail[received.by.username] = 0
+        print(received.is_read)
+        if not received.is_read:
+            chat_detail[received.by.username] += 1
+        print(chat_detail)
     if user.username:
         print("Username: ", user.username)
-        return render(request=request, template_name='chat.html', context={"userop": user, "users": CustomUser.objects.all()})
+        print(type(user.username), chat_detail[received.by.username])
+        return render(request=request, template_name='chat.html', context={"userop": user,
+                                                                           "users": CustomUser.objects.all(),
+                                                                           "received": chat_received,
+                                                                           "details": chat_detail,
+                                                                           })
     else:
         return HttpResponseRedirect("register")
 
@@ -36,7 +50,7 @@ def register(request):
             user = CustomUser.objects.create_user(email=email, password=password, username=username)
             user.save()
             print("User saved")
-            # user = authenticate(username=username, password=password)
+            user = authenticate(username=username, password=password)
             request.user = user
             login(request, user)
             print("User saved")

@@ -58,11 +58,11 @@ class Chats(models.Model):
     to = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='received_chats')
     by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_chats')
     message = models.TextField()
-    # timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Chat from {self.by.username} to {self.to.username} : {self.message}"
+        return f"Chat from {self.by.username} to {self.to.username} : {self.message} at {self.timestamp}"
 
 
 class ChatRooms(models.Model):
