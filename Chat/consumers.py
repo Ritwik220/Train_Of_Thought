@@ -34,9 +34,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name = await sync_to_async(self.get_room_name)(self.user, self.other_user)
             self.chat_room = await sync_to_async(ChatRooms.objects.get)(name=self.room_group_name)
             self.chats = await sync_to_async(lambda: list(self.chat_room.chats.select_related('by', 'to').all()))()
-            self.past = []
+            self.past = [{"by": chat.by.username, "message": chat.message} for chat in self.chats]
 
-            print(f"Room name: {self.room_group_name}\nChannel name: {self.channel_name}")
+            print(f"Room name: {self.room_group_name}\nChannel name: {self.channel_name}\n{self.chats}")
             print(f"{self.user} connected to {self.room_group_name}")
 
             await self.channel_layer.group_add(

@@ -96,6 +96,7 @@ function createChatRoom(to){
          let data = JSON.parse(e.data);
          console.log("Username: ", username);
          console.log("Other username: ", data.user);
+         console.log(data)
          // console.log(data.email === email && to === data.to);
          if(data.type === 'chat') {
              let chatBox = document.getElementById("chat-messages");

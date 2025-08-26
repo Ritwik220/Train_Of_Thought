@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from .models import CustomUser, Chats
 
@@ -12,7 +13,7 @@ def chat_home(request):
         return redirect('/Chat/')
     return render(request=request, template_name="Chat_Home.html")
 
-
+@login_required
 def chat(request):
     user = request.user
     chat_received = Chats.objects.filter(to=user)
