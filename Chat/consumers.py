@@ -34,6 +34,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name = await sync_to_async(self.get_room_name)(self.user, self.other_user)
             self.chat_room = await sync_to_async(ChatRooms.objects.get)(name=self.room_group_name)
             self.chats = await sync_to_async(lambda: list(self.chat_room.chats.select_related('by', 'to').all()))()
+            for chat in self.chats:
+                chat.is_read = True
+                await sync_to_async(chat.save)()
             self.past = [{"by": chat.by.username, "message": chat.message} for chat in self.chats]
 
             print(f"Room name: {self.room_group_name}\nChannel name: {self.channel_name}\n{self.chats}")
@@ -49,7 +52,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({
                 'type': 'connection_established',
                 'message': 'you are now connected',
-                'past': self.past
+                'past': self.past,
+                'user': self.other_user.username,
             }))
         except Exception as e:
             print(f"Error in connect: {e}")
@@ -95,6 +99,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
             status = "sent"
         else:
             status = "received"
+
+        if status == "received":
+            chat_room = event['chat_room']
+            chats = await sync_to_async(lambda: list(chat_room.chats.select_related('by', 'to').all()))()
+            for chat in chats:
+                chat.is_read = True
+                await sync_to_async(chat.save)()
 
         await self.send(text_data=json.dumps({
             'type': 'chat',

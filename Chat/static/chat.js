@@ -4,6 +4,15 @@ let to = null;
 let charSocket = null;
 
 document.addEventListener("DOMContentLoaded", () => {
+    let unread_counts = document.querySelectorAll(".contact-chats");
+    unread_counts.forEach(count => {
+        if(count.innerHTML.trim() === "0" || count.innerHTML.trim() === "") {
+            count.style.display = 'none';
+        }
+        else {
+            count.style.display = 'block';
+        }
+    })
     // Check point
     console.log("Document Loaded");
     // Getting all the contacts present and displaying them for the user
@@ -84,8 +93,10 @@ function createChatRoom(to){
      console.log("Connected to chat with ", to);
      const encodedTo = encodeURIComponent(to);
      let url = `ws://${window.location.host}/ws/socket-server/${encodedTo}/`;
+     let notification_url = 'ws://${window.location.host}/ws/notifications/';
      console.log(url);
      charSocket = new WebSocket(url);
+     notificationSocket = new WebSocket(notification_url);
      // Check point
      // charSocket.onopen = () => console.log("WebSocket opened");
      // charSocket.onerror = (e) => console.error("WebSocket error:", e);
@@ -137,9 +148,25 @@ function createChatRoom(to){
                  chatBox.appendChild(messageElement);
                  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
              });
+             let notification = document.getElementById("notification-count-" + data.user);
+             console.log("notification-count-" + data.user);
+             console.log(data)
+             notification.innerHTML = 0;
+             notification.style.display = 'none'; // Hide the notification count
          }
          else {
              console.error("Unknown data type received:", data.type);
          }
      };
+     // notificationSocket.onmessage = function(e) {
+     //    console.log("Notification received from the backend:", e.data);
+     //    let data = JSON.parse(e.data);
+     //    if(data.type === 'notification') {
+     //        let notificationCount = document.getElementById("notification-count-" + data.user);
+     //        let count = parseInt(notificationCount.innerHTML) || 0;
+     //        count += 1;
+     //        notificationCount.innerHTML = count;
+     //        notificationCount.style.display = 'block'; // Show the notification count
+     //    }
+     //}
 }
