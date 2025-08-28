@@ -2,6 +2,7 @@
 // Variable to store the name of the contact or group the user is sending the message to
 let to = null;
 let charSocket = null;
+let notificationSocket = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     let unread_counts = document.querySelectorAll(".contact-chats");
@@ -39,6 +40,22 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Search value: ", search.value);
         searchContact(search.value);
     }
+    let notification_url = 'ws://${window.location.host}/ws/notifications/';
+    notificationSocket = new WebSocket(notification_url)
+    notificationSocket.onmessage = function(e) {
+         let data = JSON.parse(e.data)
+         if(data.type === "connection-established") {
+             console.log(data.notification)
+         }
+         else if(data.type === "notifications") {
+             let notifications = data.notifications;
+             notifications.forEach(notification => {
+                 if(notification.by === username) {
+                     sendNotification(notification.notification, data.by)
+                 }
+             })
+         }
+     }
     });
 
 
@@ -81,6 +98,11 @@ function sendMessage() {
             'user': username,
             'to': to,
         }));
+        notificationSocket.send(JSON.stringify({
+            'message': message,
+            'by': username,
+            'to': to,
+        }))
         // Resetting the input to null after the message has been sent to the backend.
         messageInput.value = '';
     } else {
@@ -93,10 +115,8 @@ function createChatRoom(to){
      console.log("Connected to chat with ", to);
      const encodedTo = encodeURIComponent(to);
      let url = `ws://${window.location.host}/ws/socket-server/${encodedTo}/`;
-     let notification_url = 'ws://${window.location.host}/ws/notifications/';
      console.log(url);
      charSocket = new WebSocket(url);
-     notificationSocket = new WebSocket(notification_url);
      // Check point
      // charSocket.onopen = () => console.log("WebSocket opened");
      // charSocket.onerror = (e) => console.error("WebSocket error:", e);
@@ -128,7 +148,7 @@ function createChatRoom(to){
                  chatBox.appendChild(messageElement);
                  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
              }
-             }
+         }
          else if(data.type==='connection_established'){
              let chatBox = document.getElementById("chat-messages");
              chatBox.innerHTML = ""; // Clear previous messages
@@ -169,4 +189,24 @@ function createChatRoom(to){
      //        notificationCount.style.display = 'block'; // Show the notification count
      //    }
      //}
+}
+function sendNotification(notification, by) {
+     if (!("Notification" in window)) {
+    // Check if the browser supports notifications
+    alert("This browser does not support desktop notification");
+     } else if (Notification.permission === "granted") {
+           // Check whether notification permissions have already been granted;
+           // if so, create a notification
+           const notification = new Notification("From: " + by + "\nMessage: " + message);;
+           // …
+     } else if (Notification.permission !== "denied") {
+          // We need to ask the user for permission
+          Notification.requestPermission().then((permission) => {
+         // If the user accepts, let's create a notification
+             if (permission === "granted") {
+                const notification = new Notification("From: " + by + "\nMessage: " + message);
+         // …
+            }
+         });
+     }
 }

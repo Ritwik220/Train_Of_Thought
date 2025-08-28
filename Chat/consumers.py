@@ -51,7 +51,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
             await self.send(text_data=json.dumps({
                 'type': 'connection_established',
-                'message': 'you are now connected',
+                'message': f'you are now connected to the chat socket with {self.other_user.username}',
                 'past': self.past,
                 'user': self.other_user.username,
             }))
@@ -137,3 +137,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except ChatRooms.DoesNotExist:
             return []
 
+
+class Notifications(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.user = self.scope["user"]
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+        await self.send(json.dumps({
+            "type": "connection-established",
+            "notification": f"{self.user.username} is connected to the notifications socket."
+        }))
+        self.user.online = True
+        await sync_to_async(self.online.save)()
+        # notifications = Chats.object.filter(to=self.user, is_read=False, notification_sent=False)
+
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        to_username = text_data_json["to"]
+        to = User.objects.get(username=to_username)
+        by_username = text_data_json["by"]
+        by = User.objects.get(username=by_username)
+        notifications = Chats.object.filter(to=to, by=by, is_read=False, notification_sent=False)
+        notifications = [{"to": notification.to.username, "by": notification.by.username, "notification": notification.message} for notification in notifications]
+        await self.send({
+            "type": "notification",
+            "notifications": notifications
+        }
+        )
+
+    async def disconnect(self, code):
+        self.user.online = False
+        sync_to_async(self.online.save)()

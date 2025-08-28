@@ -38,6 +38,7 @@ class CustomUser(AbstractBaseUser):
     username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
+    online = models.BooleanField(default=False)
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'password']
@@ -60,6 +61,7 @@ class Chats(models.Model):
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+    notification_sent = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Chat from {self.by.username} to {self.to.username} : {self.message} at {self.timestamp}"

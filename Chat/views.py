@@ -13,20 +13,20 @@ def chat_home(request):
         return redirect('/Chat/')
     return render(request=request, template_name="Chat_Home.html")
 
-@login_required
+
 def chat(request):
     user = request.user
-    chat_received = Chats.objects.filter(to=user)
-    chat_detail = {}
-    for received in chat_received:
-        if received.by.username not in chat_detail:
-            chat_detail[received.by.username] = 0
-        print(f"received: {received}")
-        print(received.is_read)
-        if not received.is_read:
-            chat_detail[received.by.username] += 1
-        print(chat_detail)
     if user.username:
+        chat_received = Chats.objects.filter(to=user)
+        chat_detail = {}
+        for received in chat_received:
+            if received.by.username not in chat_detail:
+                chat_detail[received.by.username] = 0
+            print(f"received: {received}")
+            print(received.is_read)
+            if not received.is_read:
+                chat_detail[received.by.username] += 1
+            print(chat_detail)
         print("Username: ", user.username)
         print(type(user.username), chat_detail[received.by.username])
         return render(request=request, template_name='chat.html', context={"userop": user,
@@ -35,7 +35,7 @@ def chat(request):
                                                                            "details": chat_detail,
                                                                            })
     else:
-        return HttpResponseRedirect("register")
+        return HttpResponseRedirect("home")
 
 
 def register(request):
