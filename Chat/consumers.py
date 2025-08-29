@@ -142,7 +142,7 @@ class Notifications(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
         await self.channel_layer.group_add(
-            self.room_group_name,
+            "notifications",
             self.channel_name
         )
         await self.accept()
@@ -151,23 +151,42 @@ class Notifications(AsyncWebsocketConsumer):
             "notification": f"{self.user.username} is connected to the notifications socket."
         }))
         self.user.online = True
-        await sync_to_async(self.online.save)()
+        await sync_to_async(self.user.save)()
         # notifications = Chats.object.filter(to=self.user, is_read=False, notification_sent=False)
 
     async def receive(self, text_data):
+        print("In receive of notifications.")
         text_data_json = json.loads(text_data)
-        to_username = text_data_json["to"]
-        to = User.objects.get(username=to_username)
+        print(text_data_json)
+        to_username = text_data_json.get("to", None)
+        to = await sync_to_async(CustomUser.objects.get)(username=to_username)
         by_username = text_data_json["by"]
-        by = User.objects.get(username=by_username)
-        notifications = Chats.object.filter(to=to, by=by, is_read=False, notification_sent=False)
-        notifications = [{"to": notification.to.username, "by": notification.by.username, "notification": notification.message} for notification in notifications]
-        await self.send({
-            "type": "notification",
-            "notifications": notifications
-        }
+        by = await sync_to_async(CustomUser.objects.get)(username=by_username)
+        notifications, unread_count = await self.get_notifications(to, by)
+        print(notifications, unread_count)
+        await self.channel_layer.group_send(
+            'notifications',
+            {
+            "type": "send_notification",
+            "notifications": notifications,
+            "unread_count": unread_count
+            }
         )
+
+    async def send_notification(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "notification",
+            "notifications": event["notifications"],
+            "unread_count": event["unread_count"]
+        }))
+
+    @database_sync_to_async
+    def get_notifications(self, to, by):
+        notifications = Chats.objects.filter(to=to, by=by, is_read=False, notification_sent=False)
+        unread = Chats.objects.filter(to=to, by=by, is_read=False, notification_sent=False).count()
+        notifications = [{"to": notification.to.username, "by": notification.by.username, "notification": notification.message} for notification in notifications]
+        return notifications, unread
 
     async def disconnect(self, code):
         self.user.online = False
-        sync_to_async(self.online.save)()
+        sync_to_async(self.user.save)()

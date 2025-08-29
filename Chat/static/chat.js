@@ -2,6 +2,7 @@
 // Variable to store the name of the contact or group the user is sending the message to
 let to = null;
 let charSocket = null;
+let isConnectionEstablished = false;
 let notificationSocket = null;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -30,6 +31,34 @@ document.addEventListener("DOMContentLoaded", () => {
     // Taking the submit button and assigning an event of sending the message to the backend to it if pressed
     let chat_submit = document.getElementById("send-button");
     chat_submit.addEventListener('click', sendMessage);
+    let notification_url = `ws://${window.location.host}/ws/notifications/`;
+    notificationSocket = new WebSocket(notification_url)
+    console.log(notification_url)
+    notificationSocket.onmessage = function(e) {
+         console.log("Notification received from the backend:", e.data);
+         let data = JSON.parse(e.data)
+         if(data.type === "connection-established") {
+             console.log(data.notification)
+         }
+         else if(data.type === "notification") {
+             console.log("Notification: " + data.notifications + " count: " + data.unread_count);
+             let notifications = data.notifications;
+             notifications.forEach(notification => {
+                 let unread_count = document.getElementById("notification-count-" + notification.by);
+                 console.log(unread_count)
+                 if(unread_count != null) {
+                     unread_count.innerHTML = data.unread_count;
+                     console.log(unread_count.innerHTML)
+                     unread_count.style.display = data.unread_count === 0? 'none':'block'; // Show the notification count
+                 }
+             })
+             notifications.forEach(notification => {
+                 if(notification.to === username) {
+                     sendNotification(notification.notification, data.by)
+                 }
+             })
+         }
+     }
     var search = document.getElementById("search");
     // Doing the same if the enter key is pressed
     document.addEventListener('keydown', function(event) {
@@ -40,22 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Search value: ", search.value);
         searchContact(search.value);
     }
-    let notification_url = 'ws://${window.location.host}/ws/notifications/';
-    notificationSocket = new WebSocket(notification_url)
-    notificationSocket.onmessage = function(e) {
-         let data = JSON.parse(e.data)
-         if(data.type === "connection-established") {
-             console.log(data.notification)
-         }
-         else if(data.type === "notifications") {
-             let notifications = data.notifications;
-             notifications.forEach(notification => {
-                 if(notification.by === username) {
-                     sendNotification(notification.notification, data.by)
-                 }
-             })
-         }
-     }
     });
 
 
@@ -127,7 +140,7 @@ function createChatRoom(to){
          let data = JSON.parse(e.data);
          console.log("Username: ", username);
          console.log("Other username: ", data.user);
-         console.log(data)
+         console.log(data);
          // console.log(data.email === email && to === data.to);
          if(data.type === 'chat') {
              let chatBox = document.getElementById("chat-messages");
@@ -150,6 +163,7 @@ function createChatRoom(to){
              }
          }
          else if(data.type==='connection_established'){
+             isConnectionEstablished = true;
              let chatBox = document.getElementById("chat-messages");
              chatBox.innerHTML = ""; // Clear previous messages
              data.past.forEach(chat => {
@@ -190,10 +204,10 @@ function createChatRoom(to){
      //    }
      //}
 }
-function sendNotification(notification, by) {
+function sendNotification(message, by) {
      if (!("Notification" in window)) {
-    // Check if the browser supports notifications
-    alert("This browser does not support desktop notification");
+         // Check if the browser supports notifications
+         alert("This browser does not support desktop notification");
      } else if (Notification.permission === "granted") {
            // Check whether notification permissions have already been granted;
            // if so, create a notification
