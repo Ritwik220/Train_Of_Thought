@@ -4,6 +4,8 @@ let to = null;
 let charSocket = null;
 let isConnectionEstablished = false;
 let notificationSocket = null;
+let isConnected = false;
+let connectedWith = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     let unread_counts = document.querySelectorAll(".contact-chats");
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
              notifications.forEach(notification => {
                  let unread_count = document.getElementById("notification-count-" + notification.by);
                  console.log(unread_count)
-                 if(unread_count != null) {
+                 if(unread_count != null && notification.by !== connectedWith) {
                      unread_count.innerHTML = data.unread_count;
                      console.log(unread_count.innerHTML)
                      unread_count.style.display = data.unread_count === 0? 'none':'block'; // Show the notification count
@@ -164,6 +166,8 @@ function createChatRoom(to){
              }
          }
          else if(data.type==='connection_established'){
+             isConnected = true;
+             connectedWith = data.user;
              isConnectionEstablished = true;
              let chatBox = document.getElementById("chat-messages");
              chatBox.innerHTML = ""; // Clear previous messages
@@ -188,6 +192,10 @@ function createChatRoom(to){
              console.log(data)
              notification.innerHTML = 0;
              notification.style.display = 'none'; // Hide the notification count
+         }
+         else if(data.type === 'disconnected') {
+             isConnected = false;
+             connectedWith = null;
          }
          else {
              console.error("Unknown data type received:", data.type);

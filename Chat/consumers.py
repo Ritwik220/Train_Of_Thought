@@ -10,6 +10,7 @@ User = CustomUser()  # Assuming CustomUser is your user model
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         try:
+            self.connected = True
             # Getting the user from the front-end
             self.user = self.scope["user"]
             print(self.scope, self.scope["user"])
@@ -103,6 +104,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if status == "received":
             chat_room = event['chat_room']
             chats = await sync_to_async(lambda: list(chat_room.chats.select_related('by', 'to').all()))()
+            print(f"Chats read:\n{chats}")
             for chat in chats:
                 chat.is_read = True
                 await sync_to_async(chat.save)()
@@ -128,7 +130,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return room_name
 
     async def disconnect(self, code):
+        self.connected = False
         print("Disconnected", code)
+        self.send(json.dumps({
+            'type': 'disconnected',
+            'message': 'you are now disconnected from the chat socket'
+        }))
 
     @database_sync_to_async
     def get_chats(self, room_name):
@@ -189,4 +196,5 @@ class Notifications(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         self.user.online = False
+        print(self.user.online)
         sync_to_async(self.user.save)()
