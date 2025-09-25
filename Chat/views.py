@@ -28,7 +28,7 @@ def chat(request):
                 chat_detail[received.by.username] += 1
             print(chat_detail)
         print("Username: ", user.username)
-        print(type(user.username), chat_detail[received.by.username])
+        # print(type(user.username), chat_detail[received.by.username])
         return render(request=request, template_name='chat.html', context={"userop": user,
                                                                            "users": CustomUser.objects.all(),
                                                                            "received": chat_received,
@@ -52,10 +52,10 @@ def register(request):
             user = CustomUser.objects.create_user(email=email, password=password, username=username)
             user.save()
             print("User saved")
-            user = authenticate(username=username, password=password)
             request.user = user
+            user = authenticate(username=username, password=password)
             login(request, user)
-            print("User saved")
+            print("User login done")
             return HttpResponseRedirect("Chat")
         except Exception as e:
             print("Exception")
