@@ -55,7 +55,7 @@ def register(request):
             request.user = user
             user = authenticate(username=username, password=password)
             login(request, user)
-            print("User login done")
+            print("User login")
             return HttpResponseRedirect("Chat")
         except Exception as e:
             print("Exception")
