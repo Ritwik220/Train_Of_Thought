@@ -10,7 +10,7 @@ let connectedWith = null;
 document.addEventListener("DOMContentLoaded", () => {
     let unread_counts = document.querySelectorAll(".contact-chats");
     unread_counts.forEach(count => {
-        if(count.innerHTML.trim() === "0" || count.innerHTML.trim() === "") {
+        if(count.innerHTML.trim() === "0" || count.innerHTML.trim() === "" || count.innerHTML.trim() === "None") {
             count.style.display = 'none';
         }
         else {
