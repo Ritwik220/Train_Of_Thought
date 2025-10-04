@@ -65,7 +65,7 @@ def register(request):
 
 def login_view(request):
     if request.method == "GET":
-        return render(request, "login.html")
+        return render(request, "LogIn.html")
     elif request.method == "POST":
         print("Submit button pressed")
         email = request.POST.get("email")
@@ -78,4 +78,4 @@ def login_view(request):
             return redirect('/Chat/')
         else:
             print("Invalid credentials ", user)
-            return render(request=request, template_name="login.html", context={"error": "Invalid credentials"})
+            return render(request=request, template_name="LogIn.html", context={"error": "Invalid credentials"})
