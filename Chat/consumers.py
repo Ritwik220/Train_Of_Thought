@@ -78,7 +78,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message,
                 'user': self.scope["user"].username,
                 'email': self.scope["user"].email,
-                'to': text_data_json.get('to', None),  # Optional recipient
+                'to': text_data_json.get('to', None),
                 'chat_room': chat_room
             }
         )
@@ -132,7 +132,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, code):
         self.connected = False
         print("Disconnected", code)
-        self.send(json.dumps({
+        await self.send(json.dumps({
             'type': 'disconnected',
             'message': 'you are now disconnected from the chat socket'
         }))
