@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
              notifications.forEach(notification => {
                  if(notification.to === username) {
                      // alert(notification.by + ": " + notification.notification)
-                     sendNotification(notification.notification, notification.by)
+                     sendNotification(notification.by)
                  }
              })
          }
@@ -115,7 +115,6 @@ function sendMessage() {
             'to': to,
         }));
         notificationSocket.send(JSON.stringify({
-            'message': message,
             'by': username,
             'to': to,
         }))
@@ -213,8 +212,8 @@ function createChatRoom(to){
      //    }
      //}
 }
-function sendNotification(message, by) {
-     console.log("Sending notification: ", message, " by ", by);
+function sendNotification(by) {
+     console.log("Sending notification by ", by);
      if (!("Notification" in window)) {
          // Check if the browser supports notifications
          alert("This browser does not support desktop notification");
@@ -222,7 +221,7 @@ function sendNotification(message, by) {
               console.log("Notification permission already granted");
            // Check whether notification permissions have already been granted;
            // if so, create a notification
-           const notification = new Notification("From: " + by + "\nMessage: " + message);;
+           const notification = new Notification("New message by " + by);
            // …
      } else if (Notification.permission !== "denied") {
            console.log("Requesting notification permission");
@@ -230,7 +229,7 @@ function sendNotification(message, by) {
           Notification.requestPermission().then((permission) => {
          // If the user accepts, let's create a notification
              if (permission === "granted") {
-                const notification = new Notification("From: " + by + "\nMessage: " + message);
+                const notification = new Notification("New message by " + by);
          // …
             }
          });
