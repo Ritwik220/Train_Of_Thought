@@ -191,7 +191,7 @@ class Notifications(AsyncWebsocketConsumer):
     def get_notifications(self, to, by):
         notifications = Chats.objects.filter(to=to, by=by, is_read=False, notification_sent=False)
         unread = Chats.objects.filter(to=to, by=by, is_read=False, notification_sent=False).count()
-        notifications = [{"to": notification.to.username, "by": notification.by.username, "notification": notification.message} for notification in notifications]
+        notifications = [{"to": notification.to.username, "by": notification.by.username} for notification in notifications]
         return notifications, unread
 
     async def disconnect(self, code):
