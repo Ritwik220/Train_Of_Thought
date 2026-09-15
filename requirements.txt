@@ -2,3 +2,4 @@ django
 uvicorn
 channels[daphne]>=4.0.0
 whitenoise
+channels-redis
