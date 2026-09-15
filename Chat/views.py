@@ -53,7 +53,7 @@ def register(request):
             user.save()
             print("User saved")
             request.user = user
-            user = authenticate(username=username, password=password)
+            # user = authenticate(username=username, password=password)
             login(request, user)
             print("User login")
             return redirect("/Chat/")
