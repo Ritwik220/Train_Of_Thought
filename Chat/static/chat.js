@@ -135,16 +135,34 @@ function sendMessage() {
 // Creating a chat room.
 function createChatRoom(to){
     console.log("Connected to chat with ", to);
-     const encodedTo = encodeURIComponent(to);
-     let url =
-    `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/ws/socket-server/${encodedTo}/`;
-     console.log(url);
-     charSocket = new WebSocket(url);
-     
-     // Check point
-     charSocket.onopen = () => console.log("WebSocket opened");
-     charSocket.onerror = (e) => console.error("WebSocket error:", e);
-     charSocket.onclose = (e) => console.log("Closed", e);
+
+    if (charSocket && charSocket.readyState === WebSocket.OPEN) {
+        charSocket.close();
+    }
+
+    const encodedTo = encodeURIComponent(to);
+
+    const protocol =
+        window.location.protocol === "https:" ? "wss" : "ws";
+
+    let url = `${protocol}://${window.location.host}/ws/socket-server/${encodedTo}/`;
+
+    console.log(url);
+
+    charSocket = new WebSocket(url);
+
+    charSocket.onopen = () => {
+        console.log("WebSocket opened");
+    };
+
+    charSocket.onerror = (e) => {
+        console.error("WebSocket error:", e);
+    };
+
+    charSocket.onclose = (e) => {
+        console.log("WebSocket closed:", e.code, e.reason);
+    };
+
      // Displaying the message received from the backend in the chat area.
      charSocket.onmessage = function(e) {
          console.log("Message received from the backend:", e.data);
