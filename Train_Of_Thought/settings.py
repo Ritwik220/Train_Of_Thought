@@ -32,8 +32,11 @@ DEBUG = True
 # ASGI application
 
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.render.com', # Allows any Render subdomain assigned to you
+]
 
 # Application definition
 
