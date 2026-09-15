@@ -35,14 +35,15 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    '0.0.0.0',
     'train-of-thought.onrender.com', # Allows any Render subdomain assigned to you
 ]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
     'daphne',
+    'channels',
     'personal_site',
     'Blog_app',
     'to_do_list',

@@ -79,7 +79,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'user': self.scope["user"].username,
                 'email': self.scope["user"].email,
                 'to': text_data_json.get('to', None),
-                'chat_room': chat_room
+                'chat_room': self.room_group_name
             }
         )
 
@@ -92,6 +92,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_user_by_email(self, email):
         return CustomUser.objects.get(email=email)
 
+    @database_sync_to_async
+    def get_room_chats(self, room_name):
+        chat_room = ChatRooms.objects.get(name=room_name)
+
+        chats = list(
+        chat_room.chats.select_related('by', 'to').all()
+        )
+
+        for chat in chats:
+            chat.is_read = True
+            chat.save()
+
+        return chats
+    
     async def chat_message(self, event):
         message = event['message']
         user = await self.get_user_by_email(email=event['email'])
@@ -102,9 +116,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
             status = "received"
 
         if status == "received":
-            chat_room = event['chat_room']
-            chats = await sync_to_async(lambda: list(chat_room.chats.select_related('by', 'to').all()))()
+            chats = await self.get_room_chats(
+            event['chat_room_name']
+            )
+
             print(f"Chats read:\n{chats}")
+
+
             for chat in chats:
                 chat.is_read = True
                 await sync_to_async(chat.save)()
@@ -131,11 +149,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         self.connected = False
+
+        await self.channel_layer.group_discard(
+        self.room_group_name,
+        self.channel_name
+        )
+
         print("Disconnected", code)
-        await self.send(json.dumps({
-            'type': 'disconnected',
-            'message': 'you are now disconnected from the chat socket'
-        }))
 
     @database_sync_to_async
     def get_chats(self, room_name):
@@ -147,12 +167,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 class Notifications(AsyncWebsocketConsumer):
     async def connect(self):
+        print("NOTIFICATION: connect started")
         self.user = self.scope["user"]
+        print("NOTIFICATION: before group_add")
         await self.channel_layer.group_add(
             "notifications",
             self.channel_name
         )
+        print("NOTIFICATION: after group_add")
         await self.accept()
+        print("NOTIFICATION: after accept")
         await self.send(json.dumps({
             "type": "connection-established",
             "notification": f"{self.user.username} is connected to the notifications socket."
@@ -195,6 +219,13 @@ class Notifications(AsyncWebsocketConsumer):
         return notifications, unread
 
     async def disconnect(self, code):
+        await self.channel_layer.group_discard(
+            "notifications",
+            self.channel_name
+        )
+
         self.user.online = False
-        print(self.user.online)
-        sync_to_async(self.user.save)()
+        await sync_to_async(self.user.save)()
+
+        print("Notification socket disconnected", code)
+        

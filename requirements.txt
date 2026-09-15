@@ -3,3 +3,4 @@ uvicorn[standard]
 channels[daphne]>=4.0.0
 whitenoise
 channels-redis
+redis==5.2.1

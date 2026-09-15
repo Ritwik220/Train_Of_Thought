@@ -105,20 +105,22 @@ function updateChatUser(element, name){
 
 // A function which sends a message to the backend.
 function sendMessage() {
-    if(charSocket != null) {
+    if (charSocket && charSocket.readyState === WebSocket.OPEN) {
         let messageInput = document.getElementById("message-input");
         let message = messageInput.value;
+
         charSocket.send(JSON.stringify({
             'message': message,
             'status': 'received',
             'user': username,
             'to': to,
         }));
+
         notificationSocket.send(JSON.stringify({
             'by': username,
             'to': to,
-        }))
-        // Resetting the input to null after the message has been sent to the backend.
+        }));
+
         messageInput.value = '';
     } else {
         console.error("Chat socket is not connected.");
@@ -127,11 +129,12 @@ function sendMessage() {
 
 // Creating a chat room.
 function createChatRoom(to){
-     console.log("Connected to chat with ", to);
+    console.log("Connected to chat with ", to);
      const encodedTo = encodeURIComponent(to);
      let url = `ws://${window.location.host}/ws/socket-server/${encodedTo}/`;
      console.log(url);
      charSocket = new WebSocket(url);
+     
      // Check point
      // charSocket.onopen = () => console.log("WebSocket opened");
      // charSocket.onerror = (e) => console.error("WebSocket error:", e);
