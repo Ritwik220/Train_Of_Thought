@@ -19,7 +19,8 @@ RUN pip install --no-cache-dir --upgrade pip \
 COPY . /app/
 
 # 7. Expose the port Django will run on
-EXPOSE 8000
+EXPOSE 10000
 
 # 8. Define the default command to start the server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["uvicorn", "Train_Of_Thought.asgi:application", "--host", "0.0.0.0", "--port", "10000"]
+
