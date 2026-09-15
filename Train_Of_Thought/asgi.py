@@ -14,8 +14,11 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.sessions import SessionMiddlewareStack
 from Chat import routing
+import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Chat.settings')
+
+django.setup()
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
