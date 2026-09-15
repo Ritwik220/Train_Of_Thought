@@ -12,7 +12,7 @@ import os
 
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Chat.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Train_Of_Thought.settings')
 
 django.setup()
 
