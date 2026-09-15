@@ -6,6 +6,7 @@ let isConnectionEstablished = false;
 let notificationSocket = null;
 let isConnected = false;
 let connectedWith = null;
+const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
 
 document.addEventListener("DOMContentLoaded", () => {
     let unread_counts = document.querySelectorAll(".contact-chats");
@@ -33,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Taking the submit button and assigning an event of sending the message to the backend to it if pressed
     let chat_submit = document.getElementById("send-button");
     chat_submit.addEventListener('click', sendMessage);
-    let notification_url = `ws://${window.location.host}/ws/notifications/`;
+    let notification_url = `${wsProtocol}://${window.location.host}/ws/notifications/`;
     notificationSocket = new WebSocket(notification_url)
     console.log(notification_url)
     notificationSocket.onmessage = function(e) {
@@ -131,7 +132,7 @@ function sendMessage() {
 function createChatRoom(to){
     console.log("Connected to chat with ", to);
      const encodedTo = encodeURIComponent(to);
-     let url = `ws://${window.location.host}/ws/socket-server/${encodedTo}/`;
+     let url = `${wsProtocol}://${window.location.host}/ws/socket-server/${encodedTo}/`;
      console.log(url);
      charSocket = new WebSocket(url);
      
