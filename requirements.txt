@@ -1,5 +1,5 @@
 django
-uvicorn
+uvicorn[standard]
 channels[daphne]>=4.0.0
 whitenoise
 channels-redis
