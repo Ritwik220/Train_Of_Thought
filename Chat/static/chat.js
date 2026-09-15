@@ -37,6 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let notification_url =
     `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/ws/notifications/`;
     notificationSocket = new WebSocket(notification_url)
+    notificationSocket.onopen = () => console.log("WebSocket opened");
+    notificationSocket.onerror = (e) => console.error("WebSocket error:", e);
+    notificationSocket.onclose = (e) => console.log("Closed", e);
     console.log(notification_url)
     notificationSocket.onmessage = function(e) {
          console.log("Notification received from the backend:", e.data);
