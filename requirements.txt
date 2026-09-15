@@ -1,6 +1,4 @@
 django
 uvicorn
-django-channels
-daphne
-channels
+channels[daphne]>=4.0.0
 whitenoise
