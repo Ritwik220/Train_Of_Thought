@@ -139,9 +139,9 @@ function createChatRoom(to){
      charSocket = new WebSocket(url);
      
      // Check point
-     // charSocket.onopen = () => console.log("WebSocket opened");
-     // charSocket.onerror = (e) => console.error("WebSocket error:", e);
-     // charSocket.onclose = (e) => console.log("Closed", e);
+     charSocket.onopen = () => console.log("WebSocket opened");
+     charSocket.onerror = (e) => console.error("WebSocket error:", e);
+     charSocket.onclose = (e) => console.log("Closed", e);
      // Displaying the message received from the backend in the chat area.
      charSocket.onmessage = function(e) {
          console.log("Message received from the backend:", e.data);
