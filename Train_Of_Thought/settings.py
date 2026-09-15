@@ -35,7 +35,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '.render.com', # Allows any Render subdomain assigned to you
+    'train-of-thought.onrender.com', # Allows any Render subdomain assigned to you
 ]
 
 # Application definition
