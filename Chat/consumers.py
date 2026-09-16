@@ -79,7 +79,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'user': self.scope["user"].username,
                 'email': self.scope["user"].email,
                 'to': text_data_json.get('to', None),
-                'chat_room': self.room_group_name
+                'chat_room_name': self.room_group_name
             }
         )
 
