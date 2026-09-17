@@ -1,5 +1,7 @@
 In order to run this project, you will need to put the following commands in your terminal
 
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt                                                                                                                                              
 python manage.py makemigrations                                                                                                                    
 python manage.py migrate                                                                                             
